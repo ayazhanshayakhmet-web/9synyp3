@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="kk"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Өз құқығыңды білесің бе?</title>
+<style>
+:root{--bg:#0a0a1f;--c1:#7c5cff;--c2:#00e0ff;--c3:#ff4fa3;--ok:#2ee59d;--bad:#ff5c7a;--tx:#f2f1ff;--mut:#a9a6d6;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,Roboto,sans-serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(circle at 20% 10%,#1b1450,transparent 55%),radial-gradient(circle at 85% 90%,#2a0f45,transparent 55%)}
+.bg::after{content:"";position:absolute;inset:-50%;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:48px 48px;animation:grid 20s linear infinite;transform:perspective(600px) rotateX(55deg) translateY(0)}
+@keyframes grid{to{background-position:0 480px}}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:mv 16s ease-in-out infinite alternate}
+.b1{width:360px;height:360px;background:var(--c1);top:-80px;left:-80px}
+.b2{width:320px;height:320px;background:var(--c2);bottom:-60px;right:-60px;animation-delay:-5s}
+.b3{width:260px;height:260px;background:var(--c3);top:40%;left:55%;animation-delay:-9s}
+@keyframes mv{to{transform:translate(120px,80px) scale(1.25)}}
+.fl{position:absolute;bottom:-60px;opacity:0;color:#fff;animation:rise linear infinite}
+@keyframes rise{10%{opacity:.35}90%{opacity:.25}100%{transform:translateY(-115vh) rotate(360deg);opacity:0}}
+#app{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:16px}
+.hud{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 16px;border-radius:16px;background:rgba(255,255,255,.07);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);font-weight:600;margin-bottom:16px}
+.hud b{color:var(--c2)}
+.screen{display:none;animation:in .5s ease}
+.screen.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(24px) scale(.98)}}
+.card{background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+h1{font-size:clamp(28px,7vw,48px);margin:8px 0;line-height:1.1;background:linear-gradient(90deg,var(--c2),var(--c1),var(--c3));-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200%;animation:sh 5s linear infinite}
+@keyframes sh{to{background-position:200%}}
+h2{margin:0 0 6px}
+p{color:var(--mut);line-height:1.5}
+.big{font-size:72px;display:inline-block;animation:fl2 3s ease-in-out infinite}
+@keyframes fl2{50%{transform:translateY(-12px) rotate(6deg)}}
+.rounds{display:grid;gap:8px;margin:14px 0;text-align:left}
+.rounds div{padding:10px 14px;border-radius:12px;background:rgba(255,255,255,.06)}
+button{font:inherit;cursor:pointer;color:var(--tx)}
+.btn{border:0;padding:14px 28px;border-radius:999px;font-weight:700;font-size:17px;background:linear-gradient(90deg,var(--c1),var(--c3));box-shadow:0 8px 30px rgba(124,92,255,.5);transition:.2s}
+.btn:hover{transform:translateY(-3px) scale(1.03)}
+.opt{display:block;width:100%;text-align:left;margin:10px 0;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);transition:.2s}
+.opt:hover:not(:disabled){background:rgba(124,92,255,.35);transform:translateX(6px)}
+.opt.ok{background:rgba(46,229,157,.3);border-color:var(--ok)}
+.opt.no{background:rgba(255,92,122,.3);border-color:var(--bad);animation:sk .4s}
+@keyframes sk{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.bar{height:8px;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden;margin:10px 0 16px}
+.bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--c2),var(--c1));transition:width .1s linear}
+.fb{min-height:24px;color:var(--tx);margin:6px 0}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.m{padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);margin-bottom:10px;width:100%;text-align:left;font-size:15px;transition:.2s}
+.m.sel{border-color:var(--c2);box-shadow:0 0 18px var(--c2);transform:scale(1.03)}
+.m.done{background:rgba(46,229,157,.3);border-color:var(--ok);pointer-events:none}
+.m.bad{animation:sk .4s;border-color:var(--bad)}
+.locks{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+.lock{aspect-ratio:1;border-radius:18px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.45);font-size:34px;display:grid;place-items:center;animation:pl 2.5s infinite}
+.lock.open{background:rgba(46,229,157,.25);border-color:var(--ok);animation:none}
+@keyframes pl{50%{box-shadow:0 0 22px var(--c3)}}
+.doc{padding:18px;border-radius:16px;background:#f3ecd2;color:#2b2415;font-family:Georgia,serif;font-size:19px;line-height:1.6;transform:rotate(-1deg)}
+.doc small{display:block;letter-spacing:3px;color:#a0252f;font-weight:700;margin-bottom:6px}
+.doc span{filter:blur(7px);transition:filter .8s;display:inline-block;margin-right:5px;user-select:none}
+.doc span.r{filter:none}
+.case{margin-top:12px}
+.rank{font-size:26px;font-weight:800;margin:8px 0}
+.sc{font-size:56px;font-weight:800;color:var(--c2)}
+@media(max-width:520px){.cols{gap:8px}.m{font-size:13px;padding:10px}}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&display=swap"><style>
+:root{--bg:#e6f6ff;--c1:#1e4fa8;--c2:#2a8fd6;--c3:#d9b45b;--tx:#0f2a5c;--mut:#4a6288;color-scheme:light}
+body,button{font-family:Lora,Georgia,"Times New Roman",serif}
+.bg{background:radial-gradient(circle at 20% 10%,#fff,transparent 55%),linear-gradient(#eaf9ff,#cdecff)}
+.bg::after{background-image:linear-gradient(rgba(30,79,168,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(30,79,168,.10) 1px,transparent 1px)}
+.bg::before{content:"";position:absolute;top:34%;right:0;width:150px;height:2px;background:repeating-linear-gradient(90deg,#2a8fd6 0 14px,transparent 14px 26px);box-shadow:0 16px 0 #2a8fd6,0 32px 0 #d9b45b;opacity:.45;animation:dash 2s linear infinite}
+@keyframes dash{to{background-position:-52px 0}}
+.blob{opacity:.38}.b1{background:#7cc8ff}.b2{background:#ffd978}.b3{background:#9fb8ff}
+.fl{color:#1e4fa8}
+.hud{background:rgba(255,255,255,.75);border:1.5px solid var(--c3);color:var(--tx)}
+.hud b{color:#a8801f}
+.card{background:rgba(255,255,255,.78);border:2px solid var(--c3);box-shadow:0 18px 50px rgba(30,79,168,.18)}
+h1{background:none;color:#16347a;-webkit-text-fill-color:#16347a;animation:none;text-transform:uppercase;letter-spacing:.5px}
+.gold{font-size:clamp(24px,6vw,40px);font-weight:700;text-transform:uppercase;background:linear-gradient(90deg,#8a6420,#f0d27c,#8a6420);background-size:200%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:sh 4s linear infinite;margin:0 0 6px}
+.rib{margin:0 -8px 10px;padding:10px;border-radius:6px;background:linear-gradient(90deg,#b8902f,#f3d98a,#b8902f);background-size:200%;animation:sh 6s linear infinite;color:#fff;font-weight:700;font-size:clamp(17px,4.5vw,26px);text-shadow:0 2px 0 #6e5110;letter-spacing:1px}
+.btn{color:#fff;background:linear-gradient(90deg,#1e4fa8,#2a8fd6);box-shadow:0 8px 26px rgba(30,79,168,.45);animation:bp 2.4s ease-in-out infinite}
+@keyframes bp{50%{box-shadow:0 8px 40px rgba(217,180,91,.9)}}
+.opt{background:rgba(255,255,255,.85);border:1px solid #b8d6ee}
+.opt:hover:not(:disabled){background:#d9ecff}
+.opt.ok{background:#d3f6e6}.opt.no{background:#ffdce3}
+.bar{background:rgba(30,79,168,.15)}.bar i{background:linear-gradient(90deg,#d9b45b,#2a8fd6)}
+.m{background:rgba(255,255,255,.85);border:1px solid #b8d6ee}
+.m.sel{box-shadow:0 0 14px rgba(42,143,214,.7)}.m.done{background:#d3f6e6}
+.lock{background:#fff;border:2px solid var(--c3)}.lock.open{background:#d3f6e6}
+.sc{color:#a8801f}
+.bx{width:104px;height:104px;margin:8px auto 14px;border-radius:20px;background:linear-gradient(135deg,#2a2a36,#111118);color:#f0d27c;font-size:54px;display:grid;place-items:center;box-shadow:0 10px 30px rgba(0,0,0,.4);animation:wb 2.6s ease-in-out infinite}
+.bx.op{background:#e8f6ff;border:2.5px solid #d9b45b;animation:pop .7s}
+@keyframes wb{25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
+@keyframes pop{from{transform:scale(.3) rotate(-180deg)}}
+.cl{list-style:none;padding:0;margin:0 0 10px;text-align:left}
+.cl li{padding:10px 14px;margin:6px 0;border-left:4px solid #d9b45b;background:rgba(255,255,255,.85);border-radius:10px;animation:in .6s both}
+.dots{display:flex;gap:8px;justify-content:center}.dots i{width:12px;height:12px;border-radius:50%;background:#b8d6ee}.dots i.d{background:var(--ok)}.dots i.n{background:var(--c3);box-shadow:0 0 10px var(--c3)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.chips span{cursor:pointer;padding:8px 14px;border-radius:999px;border:1.5px solid var(--c3);background:#fff;font-weight:700;transition:.2s}.chips span.on{background:var(--ok)}
+textarea{width:100%;padding:12px;border-radius:14px;border:1.5px solid #b8d6ee;font-size:16px;margin:8px 0;resize:vertical;background:#fff;color:var(--tx)}
+.tc{margin-top:10px;padding:12px 14px;border-radius:12px;background:#fff7dc;border:1px solid var(--c3);line-height:1.5}
+.sec{font-weight:700;color:#16347a;margin:16px 0 8px;font-size:18px;text-align:left}
+.tours{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tour{background:linear-gradient(#fff,#d3edff);border:2px solid var(--c3);border-radius:16px 16px 44px 44px;padding:12px 6px 26px;font-weight:700;font-size:13px;color:#16347a;animation:fl2 3.5s ease-in-out infinite}
+.tour:nth-child(2){animation-delay:-1.2s}.tour:nth-child(3){animation-delay:-2.4s}
+.ic{display:grid;place-items:center;width:78px;height:78px;margin:0 auto 10px;border:2.5px solid #2a8fd6;border-radius:16px;background:#e8f6ff;font-size:44px}
+.info{margin:16px 0;padding:14px 18px;border:2px solid var(--c3);border-radius:16px;background:#d6efff;text-align:left;font-weight:700;color:#16347a;font-size:clamp(16px,4.2vw,22px);line-height:1.9}
+.band{margin:18px -8px 0;padding:8px;background:linear-gradient(90deg,transparent,#e7cd85,transparent);font-weight:700;color:#16347a}
+*{font-family:Lora,Georgia,"Times New Roman",serif}
+button.tour{cursor:pointer;display:block;width:100%;text-align:center;line-height:1.4;transition:box-shadow .25s,filter .25s}
+button.tour:hover{box-shadow:0 0 0 3px rgba(217,180,91,.6),0 14px 30px rgba(30,79,168,.35);filter:brightness(1.05)}
+button.tour:active{filter:brightness(.95)}
+html,body{height:100%;overflow:hidden}body{min-height:0}
+#app{position:absolute;left:50%;top:50%;width:1280px;height:720px;max-width:none;margin:0;padding:14px 28px;display:flex;flex-direction:column;font-size:20px;transform:translate(-50%,-50%) scale(var(--s,1))}
+.hud{flex:none;margin-bottom:10px;padding:8px 18px}
+.screen.on{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px}
+.screen.on>.card{min-height:calc(100% - 8px)}
+h1{font-size:42px}.gold{font-size:34px}.rib{font-size:24px}h2{font-size:26px}
+.tours{max-width:900px;margin:12px auto}.tour{font-size:16px}.ic{width:70px;height:70px;font-size:40px}
+#qa,#mo{display:grid;grid-template-columns:1fr 1fr;gap:12px}#qa .opt,#mo .opt{margin:0;font-size:20px}
+.m{font-size:17px;padding:10px 14px;margin-bottom:8px}
+.cl li{padding:7px 14px;font-size:18px;margin:5px 0}.tc{font-size:17px}
+#my{position:relative}
+.dots+h2{margin-right:150px}.dots+h2~.sec,.dots+h2~.cl{margin-right:150px}
+.dots+h2+.bx{position:absolute;right:10px;top:30px;margin:0;width:120px;height:120px;font-size:60px}
+#s3>.card>p{font-size:16px;margin:4px 0}#s3>.card>h2{margin:0}
+</style></head><body>
+<div class="bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div id="fl"></div></div>
+<div id="app">
+<div class="hud"><span id="rn">⚖️ Құқық ойыны</span><span>Ұпай: <b id="sc">0</b> <button id="mt" onclick="tgl()" title="Музыка" style="margin-left:10px;border:0;background:none;font-size:22px">🔊</button></span></div>
+
+<section class="screen on" id="s0"><div class="card" style="text-align:center">
+<div class="rib">ҚҰРМЕТТІ ОҚУШЫЛАР!</div><h1>«Өз құқығыңды білесің бе?»</h1>
+<div class="gold">Зияткерлік ойыны</div><p>Заң саласындағы біліміңізді сынап, логикаңызды шыңдаңыз!</p>
+<div class="sec">⚡ ОЙЫН КЕЗЕҢДЕРІ (ТУРЛАР):</div><div class="tours"><button class="tour" onclick="r1()"><div class="ic">🧠</div>◆ I ТУР.<br>«ЗАҢДАР АЛАҢЫ»</button><button class="tour" onclick="r2()"><div class="ic">🧩</div>◆ II ТУР.<br>«СӘЙКЕСТЕНДІР»</button><button class="tour" onclick="r3()"><div class="ic"><svg viewBox="0 0 64 64" width="52" height="52"><path d="M32 8 56 20v26L32 58 8 46V20z" fill="#1a1a22"/><path d="M32 8 56 20 32 32 8 20z" fill="#3d3d4d"/><circle cx="43" cy="43" r="9" fill="#cfeeff" fill-opacity=".85" stroke="#555" stroke-width="3"/><path d="m50 50 9 9" stroke="#555" stroke-width="4"/></svg></div>◆ III ТУР.<br>«ҚҰПИЯ ҚҰЖАТ»<br>(ҚАРА ЖӘШІК)</button></div>
+<button class="btn" onclick="r1()">Ойынды бастау 🚀</button></div></section>
+
+<section class="screen" id="s1"><div class="card">
+<small id="qn" style="color:var(--c2);font-weight:700"></small>
+<div class="bar"><i id="tb"></i></div>
+<h2 id="qt"></h2><div id="qa"></div><div class="fb" id="fb"></div>
+<button class="btn" id="nx" style="display:none" onclick="qi++;nextQ()">Келесі →</button></div></section>
+
+<section class="screen" id="s2"><div class="card">
+<h2>🔗 Сәйкестендір</h2><p style="margin:4px 0 10px">8 жұпты тап: сол жақтан ұғымды таңда, содан кейін оң жақтан дұрыс мағынасын тап.</p>
+<div class="cols"><div id="ml"></div><div id="mr"></div></div><div class="fb" id="f2"></div>
+<button class="btn" id="n2" style="display:none" onclick="r3()">3-турға өту →</button></div></section>
+
+<section class="screen" id="s3"><div class="card">
+<h2>🗝️ Құпия құжат, қара жәшік</h2><p><b>Ойынның мақсаты:</b> қара жәшіктегі заттарды жұмбақ сипаттамалар арқылы тауып, олардың бала құқықтарымен байланысын анықта.</p>
+<div id="my"></div>
+
+
+</div></section>
+
+<section class="screen" id="s4"><div class="card" style="text-align:center">
+<div class="big">🏆</div><h1>Ойын аяқталды!</h1>
+<div class="sc" id="fs">0</div><div class="rank" id="rk"></div><p id="rm"></p>
+<button class="btn" onclick="location.reload()">Қайта ойнау 🔄</button></div></section>
+</div>
+<script>
+const $=s=>document.querySelector(s);let score=0;
+function fit(){$('#app').style.setProperty('--s',Math.min(innerWidth/1280,innerHeight/720))}fit();addEventListener('resize',fit);
+/* Дыбыс: Web Audio */
+let AC,mg,sg,musicOn=true,mtimer=0,step=0,nt=0;
+function ac(){if(!AC){AC=new(window.AudioContext||window.webkitAudioContext)();mg=AC.createGain();mg.gain.value=.12;mg.connect(AC.destination);sg=AC.createGain();sg.gain.value=.35;sg.connect(AC.destination)}if(AC.state=='suspended')AC.resume();return AC}
+function tone(f,t,d,ty,g,out){const o=AC.createOscillator(),v=AC.createGain();o.type=ty;o.frequency.value=f;v.gain.setValueAtTime(0,t);v.gain.linearRampToValueAtTime(g,t+.02);v.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(v);v.connect(out);o.start(t);o.stop(t+d+.05)}
+const NF=[261.63,293.66,329.63,392,440,523.25,587.33,659.25],ML=[0,2,4,2,5,4,2,1,0,2,4,5,7,5,4,2],BS=[130.81,110,87.31,98];
+function sched(){if(!musicOn||!AC)return;while(nt<AC.currentTime+.5){const s=step%16;tone(NF[ML[s]],nt,.3,'triangle',.5,mg);if(s%4==0)tone(BS[(step>>2)%4],nt,.9,'sine',.7,mg);if(s%2==1)tone(NF[ML[s]]*2,nt,.12,'sine',.12,mg);nt+=.24;step++}}
+function startM(){ac();if(mtimer)return;nt=AC.currentTime+.05;mtimer=setInterval(sched,200)}
+function stopM(){clearInterval(mtimer);mtimer=0}
+function tgl(){musicOn=!musicOn;$('#mt').textContent=musicOn?'🔊':'🔇';musicOn?startM():stopM()}
+addEventListener('pointerdown',()=>{if(musicOn)startM()},{once:true});
+function sfx(k){if(!musicOn)return;ac();const t=AC.currentTime;
+ if(k==1){[523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*.08,.35,'sine',.6,sg))}
+ else if(k==0){tone(180,t,.35,'sawtooth',.45,sg);tone(130,t+.14,.5,'sawtooth',.45,sg)}
+ else{[523.25,659.25,783.99,1046.5,1318.5,1046.5,1318.5,1568].forEach((f,i)=>tone(f,t+i*.12,.4,'triangle',.6,sg))}}
+const fl=$('#fl');['§','⚖','📜','🏛','©','★','¶'].forEach((c,i)=>{for(let k=0;k<3;k++){const s=document.createElement('span');s.className='fl';s.textContent=c;s.style.left=Math.random()*100+'%';s.style.fontSize=(18+Math.random()*34)+'px';s.style.animationDuration=(12+Math.random()*14)+'s';s.style.animationDelay=(-Math.random()*20)+'s';fl.appendChild(s)}});
+function show(id){document.querySelectorAll('.screen').forEach(e=>e.classList.remove('on'));$('#'+id).classList.add('on')}
+function hud(t){$('#rn').textContent=t;$('#sc').textContent=score}
+const sh=a=>a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(v=>v[1]);
+
+/* 1-тур */
+const Q=[
+{q:"Қазақстан Республикасының қолданыстағы Конституциясы қашан қабылданды?",a:["1991 жылғы 16 желтоқсан","1993 жылғы 28 қаңтар","1995 жылғы 30 тамыз","2007 жылғы 21 мамыр"],c:2,e:"1995 жылы 30 тамызда референдумда қабылданды — сондықтан 30 тамыз Конституция күні."},
+{q:"Сайлауға дауыс беру құқығы неше жастан басталады?",a:["16","18","21","25"],c:1,e:"Дауыс беру құқығы 18 жастан басталады."},
+{q:"Жалпы жағдайда қылмыстық жауапкершілік неше жастан басталады?",a:["14","16","18","21"],c:1,e:"Жалпы ереже бойынша 16 жастан; кейбір ауыр қылмыстар үшін 14 жастан."},
+{q:"Жеке куәлікті неше жасқа толғанда міндетті түрде алу керек?",a:["14","16","18","20"],c:1,e:"Жеке куәлікті 16 жасқа толғанда алу міндетті."},
+{q:"Қазақстандағы бірыңғай жедел құтқару қызметінің нөмірі қандай?",a:["101","102","112","911"],c:2,e:"112 — бірыңғай жедел қызмет нөмірі."},
+{q:"БҰҰ-ның Бала құқықтары туралы Конвенциясы қай жылы қабылданды?",a:["1959","1979","1989","2001"],c:2,e:"Конвенция 1989 жылы қабылданды."}];
+let qi=0,tm,tl,lock;
+function r1(){qi=0;hud('🏛️ 1-тур · Заңдар алаңы');show('s1');nextQ()}
+function nextQ(){
+ if(qi>=Q.length)return r2();
+ const x=Q[qi];lock=false;$('#qn').textContent='СҰРАҚ '+(qi+1)+' / '+Q.length;$('#qt').textContent=x.q;
+ $('#fb').textContent='';$('#nx').style.display='none';$('#nx').textContent=qi==Q.length-1?'2-турға өту →':'Келесі →';
+ const b=$('#qa');b.innerHTML='';
+ x.a.forEach((t,i)=>{const o=document.createElement('button');o.className='opt';o.textContent=t;o.onclick=()=>pick(i);b.appendChild(o)});
+ tl=200;clearInterval(tm);tm=setInterval(()=>{tl--;$('#tb').style.width=tl/2+'%';if(tl<=0){pick(-1)}},100)}
+function pick(i){
+ if(lock)return;lock=true;clearInterval(tm);const x=Q[qi],o=document.querySelectorAll('#qa .opt');
+ o.forEach((e,k)=>{e.disabled=true;if(k==x.c)e.classList.add('ok')});
+ if(i==x.c){sfx(1);const p=10+Math.ceil(tl/40);score+=p;$('#fb').textContent='✅ Дұрыс! +'+p+' ұпай. '+x.e}
+ else{sfx(0);if(i>=0)o[i].classList.add('no');$('#fb').textContent=(i<0?'⏰ Уақыт бітті. ':'❌ Қате. ')+x.e}
+ hud('🏛️ 1-тур · Заңдар алаңы');$('#nx').style.display='inline-block'}
+
+/* 2-тур */
+const P=[["Білім алу құқығы","Мектепте тегін оқу мүмкіндігі","Мемлекеттік мектепте орта білім тегін, ал оны алу міндетті."],["Сөз бостандығы","Өз пікіріңді еркін білдіру","Әркім өз ойын айтуға құқылы, бірақ басқаны қорламауы керек."],["Жеке өмірдің құпиялылығы","Хаттарыңды, телефоныңды рұқсатсыз оқуға болмайды","Жеке хат-хабар мен әңгіменің құпиясы заңмен қорғалады."],["Азаматтық міндет","Заңды құрметтеу және сақтау","Құқықпен бірге әркімнің міндеті де бар."],["Меншік құқығы","Өз заттарыңа ие болу және билік ету","Біреудің затын рұқсатсыз алуға немесе бүлдіруге болмайды."],["Жеке басқа қол сұғылмаушылық","Адамды заңсыз ұстауға, ұруға, қорлауға болмайды","Әр адамның тұлғасы мен қадір-қасиеті қорғалады."],["Діни сенім бостандығы","Өз наным-сенімінді таңдау құқығы","Басқа адамның сенімін құрметтеу де маңызды."],["Денсаулық сақтау құқығы","Қажетті медициналық көмек алу мүмкіндігі","Әр баланың денсаулығы мен өмірі қорғалады."]];
+let sel=null,got=0;
+function r2(){hud('🔗 2-тур · Сәйкестендір');show('s2');sel=null;got=0;$('#f2').textContent='';$('#n2').style.display='none';
+ const L=$('#ml'),R=$('#mr');L.innerHTML=R.innerHTML='';
+ P.forEach((p,i)=>{const b=document.createElement('button');b.className='m';b.textContent=p[0];b.dataset.i=i;b.onclick=()=>{L.querySelectorAll('.m:not(.done)').forEach(e=>e.classList.remove('sel'));b.classList.add('sel');sel=b};L.appendChild(b)});
+ sh(P.map((p,i)=>i)).forEach(i=>{const b=document.createElement('button');b.className='m';b.textContent=P[i][1];b.onclick=()=>{
+  if(!sel){$('#f2').textContent='👈 Алдымен сол жақтан ұғымды таңда';return}
+  if(sel.dataset.i==i){sfx(1);sel.classList.remove('sel');sel.classList.add('done');b.classList.add('done');sel=null;got++;score+=6;hud('🔗 2-тур · Сәйкестендір');$('#f2').textContent='✅ Жарайсың! +6 ұпай ('+got+'/'+P.length+'). '+(P[i][2]||'');if(got==P.length)$('#n2').style.display='inline-block'}
+  else{sfx(0);b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),400);score=Math.max(0,score-1);hud('🔗 2-тур · Сәйкестендір');$('#f2').textContent='❌ Сәйкес емес, қайта көр (−1)'}};R.appendChild(b)})}
+
+/* 3-тур (ескі нұсқа, қолданылмайды)
+const C=[
+{t:"Еңбек құқығы",q:"Жазғы демалыста жұмыс істегің келеді.",a:["Жұмыс берушімен ауызша келісіп, түнгі ауысымда жұмыс істеймін","Ата-анамның келісімімен, денсаулыққа зиянсыз жеңіл жұмысқа заң бойынша еңбек шартын жасаймын","Құжатсыз, ауыр жұмысқа көбірек ақша үшін барамын"],c:1},
+{t:"Тұтынушы құқығы",q:"Дүкеннен алған сүттің жарамдылық мерзімі өтіп кеткен болып шықты.",a:["Чекті сақтап, сатушыға шағым айтамын, ақшаны қайтаруды талап етемін; қажет болса тұтынушы құқығын қорғау органына жүгінемін","Үнсіз ішіп қоямын","Дүкеннің витринасын сындырамын"],c:0},
+{t:"Меншік құқығы",q:"Досың сенің велосипедіңді сұрамай алып, сындырып қайтарды.",a:["Оның да затын сындырып, кек аламын","Ештеңе айтпаймын, менің меншік құқығым жоқ","Зиянды өтеуді талап етіп, мәселені ата-анаммен бірге бейбіт жолмен шешемін"],c:2},
+{t:"Құқық бұзушылық",q:"Достарың мектептің қабырғасына граффити салуды ұсынды.",a:["Келісемін, ешкім көрмесе болды","Бас тартамын: қоғамдық мүлікті бүлдіру құқық бұзушылық, жауапкершілікке әкеледі","Ұсынысты көпшілікке жариялап, мақтанамын"],c:1},
+{t:"Цифрлық қауіпсіздік",q:"Біреу сенің атыңнан әлеуметтік желіде жалған аккаунт ашып, адамдарға жазып жатыр.",a:["Дәлелдерді (скриншоттарды) сақтап, желіге шағым түсіремін, ата-анама хабарлаймын; қажет болса полицияға жүгінемін","Сол адамның атынан жалған аккаунт ашып, жауап қайтарамын","Құпиясөзімді барлығына жіберемін"],c:0},
+{t:"Теңдік құқығы",q:"Сыныптасың ұлты үшін мазақталып жатыр.",a:["Мазақтауға қосыламын","Ештеңе болмағандай өтіп кетемін","Конституцияда кемсітуге тыйым салынғанын айтып, мұғалімге хабарлаймын"],c:2}];
+const D=["Адам","құқықтары","мен бостандықтары","әркімге","тумысынан","тиесілі."];let opened=0;
+function r3(){hud('🗝️ 3-тур · Құпия құжат');show('s3');opened=0;
+ $('#dc').innerHTML=D.map(t=>'<span>'+t+'</span>').join(' ');
+ const L=$('#lk');L.innerHTML='';C.forEach((c,i)=>{const b=document.createElement('button');b.className='lock';b.textContent='🔒';b.onclick=()=>openCase(i,b);L.appendChild(b)})}
+function openCase(i,btn){
+ if(btn.classList.contains('open'))return;const c=C[i],z=$('#cs');
+ z.innerHTML='<div class="card" style="padding:16px"><h2>🔒 Қорапша №'+(i+1)+' · '+c.t+'</h2><p style="color:var(--tx)">'+c.q+' Не істейсің?</p><div id="co"></div><div class="fb" id="cf"></div></div>';
+ c.a.forEach((t,k)=>{const o=document.createElement('button');o.className='opt';o.textContent=t;o.onclick=()=>{
+  if(k==c.c){o.classList.add('ok');score+=12;hud('🗝️ 3-тур · Құпия құжат');btn.textContent='🔓';btn.classList.add('open');
+   document.querySelectorAll('#co .opt').forEach(e=>e.disabled=true);$('#dc').children[i].classList.add('r');$('#cf').textContent='✅ Құлып ашылды! +12 ұпай';opened++;
+   if(opened==6){$('#n3').style.display='inline-block'}}
+  else{o.classList.add('no');o.disabled=true;score=Math.max(0,score-2);hud('🗝️ 3-тур · Құпия құжат');$('#cf').textContent='❌ Бұл дұрыс шешім емес (−2). Қайта ойлан!'}};
+  $('#co').appendChild(o)});
+ z.scrollIntoView({behavior:'smooth',block:'nearest'})}
+
+*/
+const M=[
+{t:"Білім кілті",ic:"📖",cl:["Менің парақтарымда мыңдаған ақпарат сақталған.","Мені оқыған адам жаңа білім алады.","Әрбір баланың менімен танысуға және білім алуға құқығы бар."],q:"Қара жәшікте қандай зат жасырылған?",a:["Дәптер","Кітап","Глобус","Сағат"],c:1,e:"Дұрыс! Бұл – кітап. Кітап білім алуға, дүниетанымды кеңейтуге көмектеседі. Әрбір баланың білім алуға құқығы бар. Білімді болу – өз болашағыңа жасалған маңызды қадам."},
+{t:"Жеке өмір құпиясы",ic:"📔",cl:["Менің ішімде адамның жеке ойлары сақталуы мүмкін.","Мені ашу үшін иесінің рұқсаты қажет.","Мен адамның жеке өміріне қатысты құпияларды сақтаймын."],q:"Бұл қандай зат?",a:["Сөмке","Құлыпталған күнделік","Қолшатыр","Кітапхана билеті"],c:1,e:"Дұрыс таптыңыздар! Бұл – күнделік. Әр адамның жеке ойы, хаттары және жеке өмірі құрметтелуі керек. Біреудің жеке заттарын рұқсатсыз қарау немесе құпиясын жариялау дұрыс емес."},
+{t:"Цифрлық әлем",ic:"📱",cl:["Мен арқылы әлемнің кез келген нүктесімен байланысуға болады.","Менен ақпарат іздеуге, сабақ оқуға және хабарлама жіберуге болады.","Бірақ мені дұрыс пайдаланбасаң, жеке мәліметтерің қауіпке ұшырауы мүмкін."],q:"Бұл қандай зат?",a:["Смартфон","Теледидар","Радио","Калькулятор"],c:0,e:"Дұрыс! Бұл – смартфон. Қазіргі цифрлық заманда интернетті қауіпсіз пайдалану өте маңызды. Өзгенің жеке суреттерін рұқсатсыз жарияламау, жеке деректерді қорғау және интернетте әдеп сақтау қажет."},
+{t:"Менің дауысым",ic:"🎤",cl:["Мен адамның дауысын жеткіземін.","Мен арқылы адам өз ойын көпшілікке естірте алады.","Мен үнсіздікті сөзге, ал ойды пікірге айналдыруға көмектесемін."],q:"Бұл қандай зат?",a:["Қоңырау","Қалам","Микрофон","Наушник"],c:2,e:"Иә, дұрыс! Бұл – микрофон. Ол баланың өз пікірін білдіру құқығын бейнелейді. Әрбір оқушының өз ойын айтуға құқығы бар. Сонымен бірге басқа адамның пікірін тыңдап, құрметтеуіміз қажет."},
+{t:"Қауіпсіздік белгісі",ic:"🔒🔑",cl:["Мен есікті бөтен адамдардың ашуынан қорғаймын.","Мен қауіпсіздік пен қорғаныстың белгісімін.","Мен бар жерде құпия мен мүлікті қорғауға болады."],q:"Қара жәшікте не жасырылған?",a:["Шам","Қолғап","Қоңырау","Құлып пен кілт"],c:3,e:"Дұрыс! Бұл – құлып пен кілт. Олар қауіпсіздік пен қорғанысты бейнелейді. Әрбір баланың зорлық-зомбылықтан қорғалуға және қауіпсіз ортада өмір сүруге құқығы бар."}];
+const W=[["Білім","білім"],["Жеке өмір","жеке өмір"],["Қауіпсіздік","қауіпсіз"],["Пікір","пікір"],["Құқық","құқ"]];
+let mi=0,fst=true;
+function r3(){hud('🗝️ 3-тур · Құпия құжат');show('s3');mi=0;mys()}
+function mys(){
+ const m=M[mi];fst=true;
+ $('#my').innerHTML='<div class="dots">'+M.map((_,k)=>'<i class="'+(k<mi?'d':k==mi?'n':'')+'"></i>').join('')+'</div><h2 style="text-align:center;margin-top:10px">'+(mi+1)+'-құпия. «'+m.t+'»</h2><div class="bx" id="bx">?</div><div class="sec">Құпия белгілер:</div><ul class="cl">'+m.cl.map((t,k)=>'<li style="animation-delay:'+(k*.5)+'s">'+t+'</li>').join('')+'</ul><p style="color:var(--tx);font-weight:700">Сұрақ: '+m.q+'</p><div id="mo"></div><div class="fb" id="mf"></div><div id="mn" style="text-align:center"></div>';
+ m.a.forEach((t,k)=>{const o=document.createElement('button');o.className='opt';o.textContent=t;o.onclick=()=>{
+  if(k==m.c){sfx(1);o.classList.add('ok');document.querySelectorAll('#mo .opt').forEach(e=>e.disabled=true);score+=fst?12:6;hud('🗝️ 3-тур · Құпия құжат');
+   const b=$('#bx');b.textContent=m.ic;b.classList.add('op');$('#mf').innerHTML='✅ Дұрыс! <div class="tc"><b>Мұғалімнің түсіндіруі:</b><br>'+m.e+'</div>';
+   $('#mn').innerHTML='<button class="btn" style="margin-top:12px">'+(mi<M.length-1?'Келесі құпия →':'Соңғы кезеңге →')+'</button>';$('#mn button').onclick=()=>{mi++;mi<M.length?mys():code()}}
+  else{sfx(0);fst=false;o.classList.add('no');o.disabled=true;score=Math.max(0,score-2);hud('🗝️ 3-тур · Құпия құжат');$('#mf').textContent='❌ Қате (−2). Белгілерді қайта оқып көр!'}};
+  $('#mo').appendChild(o)})}
+function code(){
+ $('#my').innerHTML='<h2 style="text-align:center">🔐 Құпия кодты шеш!</h2><div class="bx op">🗝️</div><div class="tc"><b>Мұғалімнің сөзі:</b><br>Балалар, сіздер бес құпия затты да таптыңыздар. Бірақ қара жәшіктің ең соңғы құпиясы әлі ашылған жоқ.</div><p style="color:var(--tx)">Осы бес заттың мағынасын біріктіріп, бүгінгі сынып сағатымыздың негізгі ойын бір сөйлеммен жеткізіп көріңіздер.</p><div class="sec">Көмекші сөздер (басып қосуға болады):</div><div class="chips">'+W.map((w,i)=>'<span data-i="'+i+'">'+w[0]+'</span>').join('')+'</div><textarea id="tx" rows="3" placeholder="Сөйлемді осы жерге жаз..."></textarea><div style="text-align:center"><button class="btn" id="ck">Құпия кодты тексеру 🔓</button></div><div class="fb" id="cf"></div><div id="mn" style="text-align:center"></div>';
+ const tx=$('#tx'),ch=document.querySelectorAll('.chips span');
+ const upd=()=>{const v=tx.value.toLowerCase();let n=0;ch.forEach((s,i)=>{const on=v.includes(W[i][1]);s.classList.toggle('on',on);if(on)n++});return n};
+ ch.forEach((s,i)=>s.onclick=()=>{tx.value+=(tx.value&&!/\s$/.test(tx.value)?' ':'')+W[i][0].toLowerCase()+' ';upd();tx.focus()});
+ tx.oninput=upd;
+ $('#ck').onclick=()=>{if(tx.value.trim().length<20){$('#cf').textContent='✍️ Сөйлемді толығырақ жаз.';return}
+  const n=upd(),p=n*4;sfx(n>=3?1:0);score+=p;hud('🗝️ 3-тур · Құпия құжат');$('#ck').disabled=true;tx.disabled=true;
+  $('#cf').innerHTML='✅ Көмекші сөздер: '+n+' / 5 (+'+p+' ұпай)<div class="tc"><b>Құпия код:</b> «Әрбір баланың білім алуға, жеке өмірінің құпиялылығына, қауіпсіздікке және өз пікірін білдіруге құқығы бар.»</div>';
+  $('#mn').innerHTML='<button class="btn" style="margin-top:12px" onclick="fin()">Нәтижені көру 🏆</button>'}}
+function fin(){sfx(2);show('s4');hud('🏆 Нәтиже');$('#fs').textContent=score+' ұпай';
+ const r=score>=175?['⚖️ Заң білгірі!','Керемет! Құқығыңды да, міндетіңді де жақсы білесің.']:score>=120?['🛡️ Құқық шебері','Өте жақсы нәтиже! Аздап жаттықсаң — бірінші орын сенікі.']:score>=60?['📘 Жас заңгер','Жақсы бастама! Конституцияны қайта оқып көр.']:['🌱 Үйрену жолындасың','Ештеңе етпейді! Қайта ойнап, білімді толықтыр.'];
+ $('#rk').textContent=r[0];$('#rm').textContent=r[1]+' Негізгі ой: әрбір бала білім алуға, жеке өмір құпиялылығына, қауіпсіздікке және өз пікірін айтуға құқылы.'}
+</script></body></html>
